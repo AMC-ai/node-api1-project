@@ -34,6 +34,26 @@ server.get('/api/users', (req, res) => {
 
 
 // find user by id
+server.get('/api/users/:id', (req, res) => {
+    const id = req.params.id;
+    db.findById(id)
+        .then(user => {
+            if (!user) {
+                res
+                    .status(404)
+                    .json({ message: 'The user with the specified ID does not exist.' })
+            } else {
+                res
+                    .json(user);
+            }
+        })
+        .catch(error => {
+            console.log('error on GET /users/:id', error);
+            res
+                .status(500)
+                .json({ error: 'The user information could not be retrieved.' });
+        });
+});
 
 // add a user
 server.post('/api/users', (req, res) => {
@@ -53,14 +73,17 @@ server.post('/api/users', (req, res) => {
                     .json(user);
             })
             .catch(error => {
+                console.log('error on POST /users', error);
                 res
                     .status(500)
                     .json({ error: 'There was an error while saving the user to the database.' })
-            })
-    }
-})
+            });
+    };
+});
+
 
 // remove a user by id
+
 
 // update user, passing the id and changes
 
