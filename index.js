@@ -1,2 +1,75 @@
 // implement your API here
 const express = require("express");
+
+const db = require("./data/db.js");
+
+const server = express();
+
+server.use(express.json());
+
+
+// intializing comms 
+server.get("/", (req, res) => {
+    res.send({ api: "up and running..." });
+});
+
+
+// list of users
+server.get('/api/users', (req, res) => {
+    // Returns an array of all the user objects contained in the database.
+    db.find()
+        .then(hubs => {
+            res
+                .status(200)
+                .json(hubs);
+        })
+        .catch(error => {
+            console.log('error on GET /users', error);
+            res
+                .status(500)
+                .json({ errorMessage: 'The users information could not be retrieved.' });
+        });
+
+});
+
+
+// find user by id
+
+// add a user
+server.post('/api/users', (req, res) => {
+    // get the data the client sent
+    const userData = req.body;
+    const { name, bio } = userData
+    if (!name || !bio) {
+        res
+            .status(400)
+            .json({ errorMessage: 'Please provide name and bio for the user.' })
+    } else {
+        // call the db and add the user
+        db.insert(userData)
+            .then(user => {
+                res
+                    .status(201)
+                    .json(user);
+            })
+            .catch(error => {
+                res
+                    .status(500)
+                    .json({ error: 'There was an error while saving the user to the database.' })
+            })
+    }
+})
+
+// remove a user by id
+
+// update user, passing the id and changes
+
+
+
+
+
+const port = 4001;
+
+server.listen(port, () =>
+    console.log(`\n **API running on port ${port} **\n`)
+);
