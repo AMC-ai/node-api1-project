@@ -1,11 +1,14 @@
 // implement your API here
 const express = require("express");
+const cors = require("cors");
 
 const db = require("./data/db.js");
 
 const server = express();
 
 server.use(express.json());
+
+server.use(cors());
 
 
 // intializing comms 
@@ -18,10 +21,10 @@ server.get("/", (req, res) => {
 server.get('/api/users', (req, res) => {
     // Returns an array of all the user objects contained in the database.
     db.find()
-        .then(hubs => {
+        .then(user => {
             res
                 .status(200)
-                .json(hubs);
+                .json(user);
         })
         .catch(error => {
             console.log('error on GET /users', error);
